@@ -1,35 +1,43 @@
 const express = require('express');
-const htp = require('http'),
+const http = require('http');
 const methodOverride = require('method-override');
 const path = require('path');
 const bodyParser = require('body-parser');
-const passport = require('passport')
-const mongoose = require('mongoose')
 const errorhandler = require('errorhandler')
 const cors = require('cors')
 const session = require('express-session')
-
+const mongoose = require('mongoose')
 const app = express();
+const apiroutes = require('./routes');
+
 
 app.use(cors());
 
 app.use(require('morgan')('dev'))
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use(sessopm({ secret: 'conduit', cookie: {maxAge: 60000}, resave:false, saveUninitialized: false }))
+app.use(session({ secret: 'conduit', cookie: {maxAge: 60000}, resave:false, saveUninitialized: false }))
 
 //database setup
-const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/my-chibi', { useNewUrlParser: true });
+//Got this error:
+//(node:53366) DeprecationWarning: current URL string parser is ////deprecated, and will be removed in a future version. To use the //new parser, pass option { useNewUrlParser: true } to //MongoClient.connect.
+mongoose.connect('mongodb://localhost:27017/my-chibi');
 
-require('./model/User');
-require('./models/Resource');
-require('./models/Comment');
+require('./models/User');
+require('./models/resource');
+require('./models/comment');
 require('./config/passport');
 
-app.use(require('./routes'));
+
+app.use('/', apiroutes);
+
+
+app.use(methodOverride('_method'));
+//app.use(express.static(__dirname + '/public'))
+
+app.use(session({ secret: 'conduit', cookie: {mazAge: 6000}, resave: false, saveUninitialized: false }))
+
 
 // view engine setup
 const hbs = require('express-handlebars');
@@ -39,13 +47,7 @@ app.engine('hbs', hbs({
   layoutsDir: __dirname + '/views/layouts/'
 }));
 app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'views'));
-
-
-app.use(methodOverride('_method'));
-app.use(express.static(__dirname + '/public'))
-
-app.use(session({ secret: 'conduit', cookie: {mazAge: 6000}, resave: false, saveUninitialized: false }))
+app.set('views', path.join(__dirname, 'views'))
 
 
 // localhost:3100

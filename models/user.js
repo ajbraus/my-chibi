@@ -37,7 +37,7 @@ UserSchema.methods.validPassword = (password) => {
     return this.hash === hash;
 };
 
-UserSchema.methods.generateJWT = => {
+UserSchema.methods.generateJWT = function() {
     const today = new Date();
     const exp = new Date(today);
     exp.setDate(today.getDate() + 60);
@@ -49,7 +49,7 @@ UserSchema.methods.generateJWT = => {
     }, secret);
 };
 
-UserSchema.methods.toAuthJSON = => {
+UserSchema.methods.toAuthJSON = function() {
     return {
         username: this.username,
         email: this.email,
@@ -57,6 +57,17 @@ UserSchema.methods.toAuthJSON = => {
         bio: this.bio,
         image: this.image
     };
+};
+
+UserSchema.methods.unfollow = function(id){
+    this.following.remove(id);
+    return this.save();
+}
+
+UserSchema.methods.isFollowing = function(id){
+    return this.following.some(function(followId){
+        return followId.toString() === id.toString();
+    });
 };
 
 mongoose.model('User', UserSchema);

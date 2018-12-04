@@ -12,7 +12,7 @@ const ResourceSchema = new mongoose.Schema({
     favoritesCount: {type: Number, default: 0},
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}],
     taglist: [{type: String }],
-    author: { type: mongoose.Schema.Types.ObjectID, ref: 'User'}
+    //author: { type: mongoose.Schema.Types.ObjectID, ref: 'User'}
 }, {timestamps: true});
 
 ResourceSchema.plugin(uniqueValidator, {message: 'is already taken'});
@@ -25,14 +25,14 @@ ResourceSchema.pre('validate', (next) => {
     next();
 });
 
-ResourceSchema.methods.slugify = => {
+ResourceSchema.methods.slugify = function() {
     this.slug = slug(this.title) + '_' + (Math.random() * Math.pow(36, 6) | 0).toString(36);
 };
 
-ResourceSchema.methods.updateFavoriteCount = => {
+ResourceSchema.methods.updateFavoriteCount = function() {
     const resource = this;
 
-    return.User.count({favorites: {$in [resource._id]}}).then( => (count) {
+    return User.count({favorites: {$in: [resource._id]}}).then( function(count){
         resource.favoritesCount = count;
 
         return resource.save();
@@ -50,7 +50,7 @@ ResourceSchema.methods.toJSONFor = (user) => {
         taglist: this.tagList,
         favorited: user ? user.isFavorite(this._id) : false,
         favoritesCount: this.favoritesCount,
-        author: this.author.toProfileJSONFor(user)
+        //author: this.author.toProfileJSONFor(user)
     }
 }
 
