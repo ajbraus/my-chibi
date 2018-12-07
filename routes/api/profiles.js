@@ -1,8 +1,7 @@
-const router = require('express').Router();
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const auth = require('../auth');
-
+const router = require('express').Router();
 
 // Preload user profile on routes with ":username"
 router.param('username', (req, res, next, username) => {
@@ -15,10 +14,12 @@ router.param('username', (req, res, next, username) => {
     }).catch(next);
 });
 
-router.get('/:username', auth.optional, (req, res, next) => {
+router.get('/:username', auth.optional, function(req, res, next) {
     if(req.payload) {
-        User.findById(req.payload.id).then( (user) => {
+        User.findById(req.payload.id).then( function(user) {
             if(!user){ return res.json({profile: req.profile.toProfileJsonFor(false)}); }
+
+            return res.json({profile: req.profile.toProfileJSONFor(user)});
         });
     } else {
         return res.json({profile: req.profile.toProfileJSONFor (false)});

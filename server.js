@@ -19,15 +19,15 @@ app.use(express.json());
 
 app.use(session({ secret: 'conduit', cookie: {maxAge: 60000}, resave:false, saveUninitialized: false }))
 
-//database setup
-//Got this error:
-//(node:53366) DeprecationWarning: current URL string parser is ////deprecated, and will be removed in a future version. To use the //new parser, pass option { useNewUrlParser: true } to //MongoClient.connect.
-mongoose.connect('mongodb://localhost:27017/my-chibi');
 
 require('./models/User');
 require('./models/resource');
 require('./models/comment');
 require('./config/passport');
+//database setup
+//Got this error:
+//(node:53366) DeprecationWarning: current URL string parser is ////deprecated, and will be removed in a future version. To use the //new parser, pass option { useNewUrlParser: true } to //MongoClient.connect.
+mongoose.connect('mongodb://localhost:27017/my-chibi');
 
 
 app.use('/', apiroutes);

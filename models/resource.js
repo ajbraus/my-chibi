@@ -12,7 +12,7 @@ const ResourceSchema = new mongoose.Schema({
     favoritesCount: {type: Number, default: 0},
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}],
     taglist: [{type: String }],
-    //author: { type: mongoose.Schema.Types.ObjectID, ref: 'User'}
+    // posted_by: { type: mongoose.Schema.Types.ObjectID, ref: 'User'}
 }, {timestamps: true});
 
 ResourceSchema.plugin(uniqueValidator, {message: 'is already taken'});
@@ -50,7 +50,7 @@ ResourceSchema.methods.toJSONFor = (user) => {
         taglist: this.tagList,
         favorited: user ? user.isFavorite(this._id) : false,
         favoritesCount: this.favoritesCount,
-        //author: this.author.toProfileJSONFor(user)
+        // posted_by: this.author.toProfileJSONFor(user)
     }
 }
 

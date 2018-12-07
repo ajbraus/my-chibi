@@ -1,6 +1,6 @@
-const router = require('express').Router();
 const mongoose = require('mongoose');
 const Resource = mongoose.model('Resource');
+const router = require('express').Router();
 
 router.get('/', function(req, res, next) {
     Resource.find().distinct('taglist').then( (tags) => {

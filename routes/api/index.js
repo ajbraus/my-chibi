@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 //router.use('/', require('./users'));
-router.use('/profiles', require('./profiles'));
+// router.use('/profiles', require('./profiles'));
 router.use('/resources', require('./resources'));
 router.use('/tags', require('./tags'));
 
